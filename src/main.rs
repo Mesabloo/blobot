@@ -1,11 +1,11 @@
 use serenity::client::Client;
 use std::env;
 use crate::errors::{catch_error};
-use crate::handler::{Handler};
+use crate::event_handler::{Handler};
 use env_logger::{Builder};
 
 mod events;
-mod handler;
+mod event_handler;
 mod errors;
 
 fn main() {
