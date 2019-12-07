@@ -6,6 +6,7 @@ use env_logger::{Builder};
 
 mod events;
 mod event_handler;
+mod command_handler;
 mod errors;
 
 fn main() {
