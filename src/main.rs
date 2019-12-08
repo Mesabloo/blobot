@@ -12,6 +12,23 @@ mod events;
 mod event_handler;
 mod command_handler;
 mod errors;
+mod commands;
+
+fn main() {
+    Builder::from_env("LOGS")
+        .format_timestamp(None)
+        .format_module_path(false)
+        .format_indent(Some(4))
+        .init();
+
+    let token = &env::var("TOKEN").expect("token");
+    let mut client = Client::new(token, Handler)
+        .expect("Error creating client");
+
+    if install_blob() {
+        catch_error(client.start());
+    }
+}
 
 fn install_blob() -> bool {
     if !Path::new("./blob").exists() {
@@ -37,26 +54,10 @@ fn install_blob() -> bool {
     let res = run_cmd!("stack install --local-bin-path '../bin'");
     if let Err(why) = res {
         error!("{}", why);
-        return false;
+        false
     } else {
         info!("Successfully installed blob to `./bin`.");
-    }
-
-    return true;
-}
-
-fn main() {
-    Builder::from_env("LOGS")
-        .format_timestamp(None)
-        .format_module_path(false)
-        .format_indent(Some(4))
-        .init();
-
-    let token = &env::var("TOKEN").expect("token");
-    let mut client = Client::new(token, Handler)
-        .expect("Error creating client");
-
-    if install_blob() {
-        catch_error(client.start());
+        run_cmd!("cd ..").unwrap();
+        true
     }
 }

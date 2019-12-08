@@ -6,7 +6,7 @@ use crate::command_handler;
 
 pub fn on_message(ctx: Context, msg: Message) {
     if !msg.author.bot {
-        thread::spawn(||
+        thread::spawn(move ||
             command_handler::handle(ctx, msg)
         );
     }
