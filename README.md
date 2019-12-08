@@ -14,3 +14,9 @@ If you also want to have some logs showing up, you can add
 LOGS="blobot,events"
 ```
 to your command line.
+
+A bot prefix can also be provided to the commande-line, with
+```bash
+PREFIX="prefix"
+```
+It defaults to `B>` if not provided.

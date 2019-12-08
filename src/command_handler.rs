@@ -17,7 +17,7 @@ pub fn handle(ctx: Context, msg: Message) {
 
     debug!("> Is command?");
     let mut content = msg.content;
-    let command_prefix = env::var("PREFIX").expect("command prefix");
+    let command_prefix = env::var("PREFIX").unwrap_or(String::from("B>"));
     if content.starts_with(&command_prefix) {
         debug!("| Yes");
     } else {
