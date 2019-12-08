@@ -5,8 +5,8 @@ use crate::events::*;
 pub struct Handler;
 
 impl EventHandler for Handler {
-    fn ready(&self, _: Context, r: Ready) {
-        ready::handle(r);
+    fn ready(&self, ctx: Context, r: Ready) {
+        ready::handle(ctx, r);
     }
 
     fn message(&self, ctx: Context, m: Message) {
