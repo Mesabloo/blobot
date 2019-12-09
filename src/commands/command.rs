@@ -13,7 +13,7 @@ pub fn execute(ctx: &Context, chan: GuildChannel, c: Command) {
     let res = match c {
         Command::Code(c) => code::execute(ctx, c),
         Command::Help()  => help::execute(ctx),
-        _                => Err("")
+        _                => Err(String::from(""))
     };
     match res {
         Err(e)  => error!("{}", e),

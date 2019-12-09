@@ -5,12 +5,12 @@ use nom::*;
 use crate::commands::command;
 use serenity::prelude::{Context};
 
-pub fn execute(_: &Context) -> Result<&str, &str> {
-    Ok(">>> __Help:__\n\n\
+pub fn execute(_: &Context) -> Result<String, String> {
+    Ok(String::from(">>> __Help:__\n\n\
         **`:?` `:h` `:help`**: Show this help menu\n\
         \n\
         You can also directly write code in blocks, using \\`\\`\\`.
-    ")
+    "))
 }
 
 pub fn parse(i: &str) -> IResult<&str, command::Command> {

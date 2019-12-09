@@ -33,12 +33,17 @@ fn main() {
 fn install_blob() -> bool {
     if !Path::new("./blob").exists() {
         debug!("Blob not found in `./blob`. Cloning...");
-        let res = run_cmd!("git clone https://github.com/mesabloo/blob blob && cd blob");
+        let res = run_cmd!("git clone https://github.com/mesabloo/blob blob");
         if let Err(why) = res {
             error!("{}", why);
             return false;
         } else {
-            debug!("Cloned blob in `./blob`.");
+            if let Err(why) = run_cmd!("cd blob") {
+                error!("{}", why);
+                return false;
+            } else {
+                debug!("Cloned blob in `./blob`.");
+            }
         }
     } else {
         let res = run_cmd!("cd blob; git pull");
@@ -48,9 +53,6 @@ fn install_blob() -> bool {
         }
     }
 
-    if !Path::new("./bin").exists() {
-        fs::create_dir_all("bin").expect("Unable to create directory");
-    }
     let res = run_cmd!("stack install --local-bin-path '../bin'");
     if let Err(why) = res {
         error!("{}", why);
@@ -58,6 +60,9 @@ fn install_blob() -> bool {
     } else {
         info!("Successfully installed blob to `./bin`.");
         run_cmd!("cd ..").unwrap();
+
+        fs::create_dir_all("tmp").expect("unable to create directory `./tmp`");
+
         true
     }
 }

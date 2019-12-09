@@ -8,10 +8,36 @@ use serenity::prelude::{Context};
 use crate::commands::command;
 use std::iter::FromIterator;
 use log::{debug};
+use std::fs::{File};
+use std::fs;
+use std::io::Write;
+use chrono::Utc;
+use cmd_lib::{run_fun};
+use regex::Regex;
 
-pub fn execute(ctx: &Context, code: String) -> Result<&str, &str> {
-    debug!("code: ```{}```", code);
-    Ok("")
+pub fn execute(_ctx: &Context, code: String) -> Result<String, String> {
+    debug!("code: ```{}```", &code);
+
+    let time = Utc::now().timestamp_millis();
+    let filename = format!("tmp/tmp{}.blob", &time);
+
+    let file = File::create(&filename);
+    match file {
+        Err(e)    => return Err(e.to_string()),
+        Ok(mut f) => f.write_all(code.as_bytes()).unwrap()
+    };
+    let input = "main";
+
+    let command = format!("echo \"{}\" | ./bin/iBlob repl \"{}\"", input, filename);
+    let output = run_fun(&command).expect("failed to execute command");
+
+    fs::remove_file(filename).expect("unable to delete temporary file");
+
+    let re = Regex::new("\\[.+?m").unwrap();
+    let res = re.replace_all(output.as_str(), "");
+
+    Ok(format!(">>> ```hs\n\
+                {}```", res))
 }
 
 pub fn parse(i: &str) -> IResult<&str, command::Command> {
