@@ -1,7 +1,6 @@
 use serenity::prelude::{Context};
 use serenity::model::channel::GuildChannel;
 use crate::commands::*;
-use log::error;
 use crate::errors::catch_error;
 
 pub enum Command {
@@ -15,8 +14,11 @@ pub fn execute(ctx: &Context, chan: GuildChannel, c: Command) {
         Command::Help()  => help::execute(ctx),
         _                => Err(String::from(""))
     };
+
+    chan.broadcast_typing(&ctx.http).unwrap();
+
     match res {
-        Err(e)  => error!("{}", e),
+        Err(e)  => catch_error(chan.say(&ctx.http, format!(">>> ```{}```", e))),
         Ok(res) => catch_error(chan.say(&ctx.http, res))
     }
 }
